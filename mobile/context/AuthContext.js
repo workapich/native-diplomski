@@ -16,7 +16,6 @@ export const AuthProvider = ({ children }) => {
         const storedUser = await SecureStore.getItemAsync("userData");
         if (storedUser) {
           const userData = JSON.parse(storedUser);
-          console.log("Loaded user data from SecureStore:", userData);
           // Ensure activePlate is initialized
           setUser({
             ...userData,
@@ -49,8 +48,7 @@ export const AuthProvider = ({ children }) => {
 
       const userData = {
         id: data.data.id,
-        firstName: data.data.firstName,
-        lastName: data.data.lastName,
+        username: data.data.username,
         email: data.data.email,
         token: data.data.token,
         activePlate: data.data.activeId,

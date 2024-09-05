@@ -3,7 +3,7 @@
 
 require_once __DIR__ . '/../database/Database.php';
 require_once __DIR__ . '/../controllers/User.php';
-// require_once __DIR__ . '/../controllers/Protect.php';
+require_once __DIR__ . '/../controllers/Protect.php';
 
 
 
@@ -13,6 +13,15 @@ router('POST', '^/users/register$', function() {
     $user = new User($GLOBALS['DATABASE']);
     $user->validateRegisterData($data);
     $user->register($data);
+  });
+
+//POST register a user
+router('PUT', '^/users/changePass$', function() {
+  $data = json_decode(file_get_contents('php://input'), true);
+  $protect = new Protect($GLOBALS['DATABASE']);
+  $protect->validate();
+  $user = new User($GLOBALS['DATABASE']);
+  $user->changePassword($data);
   });
 
   

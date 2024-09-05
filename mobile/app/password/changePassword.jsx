@@ -6,11 +6,17 @@ import FormField from "../../components/FormField";
 import { Link, router } from "expo-router";
 import CustomButton from "../../components/CustomButton";
 import axios from "axios";
-const SignUp = () => {
+
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+
+const ChangePassword = () => {
+  const { user } = useContext(AuthContext); // Get the user (and token) from context
+
   const [form, setForm] = useState({
-    email: "",
+    oldPassword: "",
     username: "",
-    password: "",
+    reWriteNewPassword: "",
   });
   const [isSubmitting, setisSubmitting] = useState(false);
 
@@ -20,22 +26,23 @@ const SignUp = () => {
     const config = {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
       },
     };
 
     try {
-      const { data } = await axios.post(
-        `${process.env.EXPO_PUBLIC_API_URL}/users/register`,
+      const { data } = await axios.put(
+        `${process.env.EXPO_PUBLIC_API_URL}/users/changePass`,
         {
-          email: form.email,
-          password: form.password,
-          username: form.username,
+          oldPassword: form.oldPassword,
+          newPassword: form.NewPassword,
+          repeatNewPassword: form.reWriteNewPassword,
         },
         config
       );
 
       // setUser({ ...data.data });
-      Alert.alert("Almost there!", data.message, [{ text: "OK" }]);
+      Alert.alert("Congrats!", data.message, [{ text: "OK" }]);
       // router.replace("/home");
     } catch (error) {
       Alert.alert(
@@ -46,43 +53,33 @@ const SignUp = () => {
     }
 
     setisSubmitting(false);
-    // try {
-    //   // const result = await createUser();
-    // } catch (error) {
-    //   Alert.alert("Error", error.message);
-    // } finally {
-    //   setisSubmitting(false);
-    // }
   };
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView>
         <View className="w-full justify-center min-h-[85vh] px-4 my-6">
-          <Image
-            source={images.logo}
-            resizeMode="contain"
-            className="w-[115px] h-[35px]"
-          />
           <Text className="text-2xl text-white text-semibold mt-10 font-psemibold">
-            Sign up to Aora
+            Change Password
           </Text>
           <FormField
-            title="Username"
-            value={form.username}
-            handleChangeText={(e) => setForm({ ...form, username: e })}
+            title="Old Password"
+            value={form.oldPassword}
+            handleChangeText={(e) => setForm({ ...form, oldPassword: e })}
             otherStyles="mt-10"
           />
           <FormField
-            title="Email"
-            value={form.email}
-            handleChangeText={(e) => setForm({ ...form, email: e })}
+            title="New Password"
+            value={form.NewPassword}
+            handleChangeText={(e) => setForm({ ...form, NewPassword: e })}
             otherStyles="mt-7"
             keyboardType="email-address"
           />
           <FormField
-            title="Password"
-            value={form.password}
-            handleChangeText={(e) => setForm({ ...form, password: e })}
+            title="Repeat"
+            value={form.reWriteNewPassword}
+            handleChangeText={(e) =>
+              setForm({ ...form, reWriteNewPassword: e })
+            }
             otherStyles="mt-7"
           />
 
@@ -94,11 +91,11 @@ const SignUp = () => {
           />
           <View className="justify-center pt-5 flex-row ga-2">
             <Text className="text-lg text-gray-100 font-pregular">
-              Already have an account?{" "}
+              Changed your mind ?
             </Text>
             <Link
               href="sign-in"
-              className="text-lg font-psemibold text-secondary-100"
+              className="text-lg font-psemibold text-secondary"
             >
               Sign in
             </Link>
@@ -109,4 +106,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default ChangePassword;

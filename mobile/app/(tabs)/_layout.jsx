@@ -3,7 +3,6 @@ import { Tabs, Redirect } from "expo-router";
 
 import { icons } from "../../constants";
 const TabIcon = ({ icon, color, name, focused, larger }) => {
-  console.log(icon);
   return (
     <View className="items-center justify-center mt-2 ">
       <Image

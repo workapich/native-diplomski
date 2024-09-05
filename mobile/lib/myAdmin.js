@@ -56,7 +56,6 @@ export const getAllPlates = async (token) => {
   return await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/plate`, config);
 };
 export const deletePlate = async (token, number) => {
-  console.log("Token:", token, "| Number:", number);
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -70,7 +69,6 @@ export const deletePlate = async (token, number) => {
 };
 
 export const updateActive = async (token, number, label) => {
-  console.log("Token:", token, "| Number:", label);
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -109,8 +107,8 @@ export const addPayment = async (token) => {
     config
   );
 };
-
-export const getLatestPayments = async (token) => {
+export const getLatestPayments = async (token, params) => {
+  const { offset = 0, limit = 3 } = params;
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -118,7 +116,7 @@ export const getLatestPayments = async (token) => {
     },
   };
   return await axios.get(
-    `${process.env.EXPO_PUBLIC_API_URL}/history?limit`,
+    `${process.env.EXPO_PUBLIC_API_URL}/history?limit=${limit}&offset=${offset}`,
     config
   );
 };

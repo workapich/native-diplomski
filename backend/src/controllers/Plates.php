@@ -200,6 +200,7 @@ class Plate
     $trimmedType = trim($data['type']);
 
     $sql = "SELECT * FROM plates where id_owner=:id";
+    
     $kojiID = $GLOBALS['USER']['id'];
 
     $stmt = $this->conn->prepare($sql);

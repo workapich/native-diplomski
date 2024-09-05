@@ -1,18 +1,19 @@
 <?php
 
 require_once __DIR__ . '/../controllers/History.php';
-
 router('GET', '^/history$', function () {
   $history = new History($GLOBALS['DATABASE']);
   $protect = new Protect($GLOBALS['DATABASE']);
   $protect->validate();
 
-  // Check if a 'limit' parameter is set in the URL query string
+  // Check if 'limit' and 'offset' parameters are set in the URL query string
   $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : null;
+  $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0; // Default to 0 if no offset is provided
 
-  // Fetch history data with or without a limit
-  echo json_encode($history->getAll($limit));
+  // Fetch history data with limit and offset for pagination
+  echo json_encode($history->getAll($limit, $offset));
 });
+
 
 
 //POST creating a treatment

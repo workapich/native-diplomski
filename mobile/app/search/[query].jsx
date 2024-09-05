@@ -38,9 +38,6 @@ const Search = () => {
               Search results for:
             </Text>
             <Text className="text-2xl font-psemibold text-white">{query}</Text>
-            <View className="bt-6 mb-8">
-              <SearchInput initialQuery={query} />
-            </View>
           </View>
         )}
         ListEmptyComponent={() => (

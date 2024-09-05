@@ -39,42 +39,51 @@ class History
 
     return $data;
   }
-
-  public function getAll($limits=null): array
+  public function getAll($limit = null, $offset = 0): array
   {
-    $sql = "SELECT 
-    history.*,
-    zones.zone_name,
-    zones.color,
-    zones.price,
-    zones.sms,
-    zones.parking_limit,
-    zones.description,
-    city.name AS city_name,
-    city.image AS city_image
-FROM 
-    history
-JOIN 
-    zones ON history.id_zone = zones.id
-JOIN 
-    city ON zones.city_id = city.id
-WHERE 
-    history.id_owner = :id_owner
-ORDER BY 
-    history.payment_time DESC 
- ";
-    if($limits!==null)
-    $sql.="LIMIT 5";
-//gledaj u prosli
-$kojiID = $GLOBALS['USER']['id'];
-
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bindParam(':id_owner', $kojiID, PDO::PARAM_STR);
-
-    $stmt->execute();
-    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    return $data ? array('data' => $data) : array('message' => 'You havent got any history! Maybe use our app ? .');
+      $sql = "
+          SELECT 
+              history.*,
+              zones.zone_name,
+              zones.color,
+              zones.price,
+              zones.sms,
+              zones.parking_limit,
+              zones.description,
+              city.name AS city_name,
+              city.image AS city_image
+          FROM 
+              history
+          JOIN 
+              zones ON history.id_zone = zones.id
+          JOIN 
+              city ON zones.city_id = city.id
+          WHERE 
+              history.id_owner = :id_owner
+          ORDER BY 
+              history.payment_time DESC
+      ";
+  
+      // Add limit and offset for pagination
+      if ($limit !== null) {
+          $sql .= " LIMIT :limit OFFSET :offset";
+      }
+  
+      $kojiID = $GLOBALS['USER']['id'];
+  
+      $stmt = $this->conn->prepare($sql);
+      $stmt->bindParam(':id_owner', $kojiID, PDO::PARAM_STR);
+  
+      // Bind limit and offset if pagination is used
+      if ($limit !== null) {
+          $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+          $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+      }
+  
+      $stmt->execute();
+      $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  
+      return $data ? array('data' => $data) : array('data' => []);
   }
 
 

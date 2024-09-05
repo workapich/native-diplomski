@@ -12,7 +12,6 @@ const MapModal = ({ isVisible, onClose, feature, onSendSMS }) => {
     }
     onClose();
   };
-  console.log("asa" + feature.day);
   return (
     <Modal transparent={true}>
       <View className="flex-1 items-center justify-center bg-gray-800/50">

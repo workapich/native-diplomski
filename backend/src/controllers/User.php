@@ -213,6 +213,75 @@ class User
   }
 
 
+  
+  
+  public function changePassword(array $data)
+  {$trimmedOldPassword = isset($data['oldPassword']) ? trim($data['oldPassword']) : null;
+    $trimmedNewPassword = isset($data['newPassword']) ? trim($data['newPassword']) : null;
+    $trimmedRepeatNewPassword = isset($data['repeatNewPassword']) ? trim($data['repeatNewPassword']) : null;
+    
+    // Validate old password
+    if (!$trimmedOldPassword) {
+        http_response_code(400);
+        echo json_encode(['message' => 'Old Password is required!']);
+        exit;
+    }
+    
+    // Validate new password
+    if (!$trimmedNewPassword) {
+        http_response_code(400);
+        echo json_encode(['message' => 'New Password is required!']);
+        exit;
+    }
+    
+    // Validate repeated new password
+    if (!$trimmedRepeatNewPassword) {
+        http_response_code(400);
+        echo json_encode(['message' => 'Repeat new password is required!']);
+        exit;
+    }
+    
+    // Check if new passwords match
+    if ($trimmedNewPassword !== $trimmedRepeatNewPassword) {
+        http_response_code(400);
+        echo json_encode(['message' => 'New passwords do not match!']);
+        exit;
+    }
+    
+    $kojiID = $GLOBALS['USER']['id'];
+    $user = $this->getById($kojiID);
+    
+    // Verify old password
+    if (!password_verify($trimmedOldPassword, $user['password'])) {
+        http_response_code(400);
+        echo json_encode(['message' => 'Old password is incorrect!']);
+        exit;
+    }
 
+    if ($trimmedNewPassword === $trimmedOldPassword) {
+      http_response_code(400);
+      echo json_encode(['message' => 'New password can not be same as old password']);
+      exit;
+  }
+    
+    // Hash the new password
+    $hashedNewPassword = password_hash($trimmedNewPassword, PASSWORD_BCRYPT);
+    
+    // Update password in the database
+    $sql = "UPDATE users SET password = :password WHERE id = :id";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bindParam(':id', $kojiID, PDO::PARAM_INT);
+    $stmt->bindParam(':password', $hashedNewPassword, PDO::PARAM_STR);
+    
+    $stmt->execute();
+
+// Check if the update was successful
+if ($stmt->rowCount() > 0) {
+    echo json_encode(['message' => 'Password changed successfully!']);
+} else {
+    http_response_code(500);
+    echo json_encode(['message' => 'Failed to update password ']);
+}
+  }    
 
 }

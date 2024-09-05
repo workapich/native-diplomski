@@ -98,7 +98,6 @@ const PlateCard = ({
   useEffect(() => {
     if (updatingActive !== null) {
       handleUpdateActive();
-      console.log(user.activePlate);
     }
   }, [updatingActive]);
 

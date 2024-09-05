@@ -105,8 +105,6 @@ const Trending = ({ posts, onRefresh }) => {
       // console.log("SMS Result:", idtwo);
 
       if (result === "sent") {
-        console.log(user);
-
         try {
           // Replace `${process.env.EXPO_PUBLIC_API_URL}` with your actual API URL for testing
           const response = await axios.post(
